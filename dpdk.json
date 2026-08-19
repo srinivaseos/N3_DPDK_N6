@@ -1,0 +1,35 @@
+{
+    "interface" : 
+        [
+            {
+                "busid"          : "0000:0b:00.0",
+                "ipv4"           : "192.168.144.53",
+                "RX"             : 1,
+                "TX"             : 1,
+                "MBUFSIZE"       : 2048,
+                "cachesize"      : 512,
+                "Ringbrustsize"  : 10,
+                "rxdesc"         : 512,
+                "txdesc"         : 512,
+                "MTUsize"        : 1500,
+				"TXbusid"		 : "0000:13:00.0", 
+                "Destip"         :"192.168.144.22"
+            },
+            {
+                "busid"          : "0000:13:00.0",
+                "ipv4"           : "192.168.144.55",
+                "RX"             : 1,
+                "TX"             : 1,
+                "MBUFSIZE"       : 2048,
+                "cachesize"      : 512,
+                "Ringbrustsize"  : 10,
+                "rxdesc"         : 512,
+                "txdesc"         : 512,
+                "MTUsize"        : 1500,
+				"TXbusid"		 : "0000:0b:00.0",
+                "Destip"         :"192.168.144.21"
+            }	
+        ],
+    "Enablelogs"    : 1, 
+    "TraceEnable"   : 1           
+}
