@@ -1,0 +1,80 @@
+Invalid port_id=2 or Invalid port_id find this line // showing more or less than allocted ports in stats or port ids 
+
+Loopback mode = 1 only loops packets inside the same port
+Port 0 → Port 1 requires either:
+Physical/virtual link between ports
+Correct MAC addressing (dst MAC = port 1 MAC)
+Loopback mode = 0
+
+
+Using rte_cpu_to_be_32 for 16-bit fields (ARP opcode, ether_type) → packet discarded.
+Not filling arp_tha correctly in ARP replies → receiver ignores.
+Port RX/TX queues may drop packets if bursts exceed queue size (BRUST_SIZE?), but you are freeing only unsent packets.
+
+// summary for above question
+
+Always use rte_cpu_to_be_16 for ether_type and arp_opcode.
+Correctly fill ARP MAC addresses for replies (arp_sha / arp_tha).
+	  04/08/2026
+ 1.sending ARP request if dest MAC doesnt known should be all 0xFF 
+ 
+Ensure consistent byte order for IP addresses (rte_be_to_cpu_32 only for comparisons).
+Manage memory properly: free unsent mbufs, avoid double-free.
+Remove unnecessary rte_cpu_to_be_32 casts on 16-bit fields.
+
+// for ring create using in thread (rte_remote_launch)
+
+1.should used same ring in rx and tx same ring 
+2. so : RX  → app_req
+        Worker: app_req → app_res
+        TX  → app_res
+
+ //ERROR :-  RING: Cannot reserve memory ring create failed: File exists
+  Why This Happens
+  1.Orphaned Processes: A previous instance of the application crashed or closed improperly, leaving the allocated memory segments intact in the hugepages.
+  2.Duplicate Names: The application is trying to initialize multiple rings using the exact same name string.
+  3.Multi-process Conflict: A secondary DPDK process is trying to create a ring that the primary process already initialized.
+
+ 1. How to Fix It1:-
+   Clear the Hugepage MemoryThe quickest fix is to remove the active shared memory files left over by the application. 
+   
+   Run these commands as root:bash# Clear standard DPDK runtime files
+        sudo rm -rf /var/run/dpdk/*
+
+        # If using older DPDK versions, clear the hugepage mounts
+        sudo rm -f /dev/hugepages/*
+
+Use code with caution.Note: If your system mounts hugepages somewhere else, clean that specific directory instead.
+
+2. Kill Orphaned Processes
+
+------------------------------------------------------------------------
+
+        18/06/26
+1.rte_remote_launch was in while loop so launching function with same core and bcuz of it rte_eth_rx_brust is unable recive and send packets from tool.
+2.after removing from while ,so its recvie and send packets. 
+
+
+        23/06/2026
+        USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+        root      20   0  128.2g  22.9m  17.9m R 301.3   0.3   6:30.30 ring
+
+ 1.BEFORE using while(1) {};
+
+        USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+        root      20   0  128.2g  23.4m  18.3m S 201.0   0.3   1:12.30 ring
+ 2. after using while(1){ usleep(1)};
+
+    USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+    root      20   0  128.2g  23.0m  18.0m S   0.7   0.3   0:00.93 ring
+
+
+        22/07/2026 *****
+1.outer udp cheksum offload error after adding GTP layer and inner ipv4 and inner udp.
+2.so we need to do outer udp cheksum check after  GTP layer and inner loop modify.so issue will resolved.
+  
+  04/08/2026
+ 1.sending ARP request if dest MAC doesnt known should be all 0xFF 
+ 
+	12/08/2026
+ 1. packet mbuf adjcent need to be done while packet arrive next extract header with mbuf_mtod

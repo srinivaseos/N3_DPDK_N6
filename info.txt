@@ -1,0 +1,43 @@
+        18/06/2026 
+1.the  one packet recvie and one send load  was sustianed and backup was taken with 18/06/2026 
+
+        14/07/2026
+1.For 1 interafce taken backup .c file on 14/07/2026.
+1.UPDATE to 2 interfaces and need to check  recivece and send;  ##pending
+
+        15/07/2026
+1. digaram:-
+        Path 1:
+        Server 1 Port 1 (GTP)
+                │
+                ▼
+        Server 2 Port 1 (GTP-GI)
+                │
+                ▼
+        Server 1 Port 2 (GI)
+
+        Path 2:
+        Server 1 Port 2 (GI)
+                │
+                ▼
+        Server 2 Port 2 (GI-GTP)
+                │
+                ▼
+        Server 1 Port 1 (GTP)
+
+2.TRAFFIC FLOW:-
+        
+        2.1. Server 1 Port 1 (GTP) → Server 2 Port 1 (GTP-GI) : GTP
+        2.2. Server 2 Port 1 (GTP-GI) → Server 1 Port 2 (GI) : GI
+        2.3. Server 1 Port 2 (GI) ↔ Server 2 Port 2 (GI-GTP) : GI (bidirectional)
+        2.4. Server 2 Port 2 (GI-GTP) → Server 1 Port 1 (GTP) : GTP
+
+        20/07/2026
+##pending to check rte_mempool_count/available while allocting and running.
+1. In server-1 need to create GTP packet send to server-2.
+
+        1.1. A.ethernet header, B.outeripv4, C.UDP, D.GTPrs, E.Inner ipv4, F.udp/tcp, G.Data.
+        
+
+	03/08/2026
+	https://docs.napatech.com/r/Link-InlineTM-Software-Features/Buffer-System	//for encapsul and decapsul DOC
